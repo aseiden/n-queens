@@ -16,17 +16,56 @@
 
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+  
+  var board = new Board({n : n});
+  var piecesRemaining = n;
+  var solution = [];
 
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
+
+  function findOneSolution (board, piecesRemaining, currentColumn) {
+    var boardPeek = board.rows();
+
+    if (board.hasAnyRooksConflicts()) {
+      return;
+    } else if (piecesRemaining === 0) {
+        var oneSolution = [];
+        for (var i = 0; i < n; i++) {
+          var row = board.get(i);
+          var newRow = [];
+          for (var k = 0; k < n; k++) {
+            newRow.push(row[k]);
+          }
+          oneSolution.push(newRow);
+        }
+        solution.push(oneSolution);
+    } else {
+      var row = 0;
+      var column = currentColumn;
+      // now place a rook here and send this function back in with a new board and the next column value
+      for (row; row < n; row++) {
+        var oldBoard = board.rows();
+        var modifiedBoard = new Board(oldBoard);
+        modifiedBoard.togglePiece(row, column);
+        var newMatrixPeek = modifiedBoard.rows();
+        findOneSolution(modifiedBoard, piecesRemaining-1, column+1);
+        modifiedBoard.togglePiece(row, column);
+      }
+
+    }
+
+  }
+
+  findOneSolution(board, n, 0);
+  // console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
+  console.log(solution[0]);
+  return solution[0];
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
   var solutionCount = undefined; //fixme
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  // console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
 
@@ -34,7 +73,7 @@ window.countNRooksSolutions = function(n) {
 window.findNQueensSolution = function(n) {
   var solution = undefined; //fixme
 
-  console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
+  // console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
 };
 
@@ -42,6 +81,6 @@ window.findNQueensSolution = function(n) {
 window.countNQueensSolutions = function(n) {
   var solutionCount = undefined; //fixme
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+  // console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
