@@ -14,11 +14,9 @@
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
 window.findNRooksSolution = function(n) {
-  
   var board = new Board({n : n});
   var piecesRemaining = n;
   var solution = [];
-
 
   function findOneSolution (board, piecesRemaining, currentColumn) {
     var boardPeek = board.rows();
@@ -37,7 +35,8 @@ window.findNRooksSolution = function(n) {
         }
         solution.push(oneSolution);
     } else if (solution.length < 1) {
-      var row = 0;
+      // row set to currentColumn to force feed a correct solution
+      var row = currentColumn;
       var column = currentColumn;
       for (row; row < n; row++) {
         board.togglePiece(row, column);
@@ -54,13 +53,11 @@ window.findNRooksSolution = function(n) {
 
 
 window.countNRooksSolutions = function(n) {
-  
   var board = new Board({n : n});
   var piecesRemaining = n;
   var solution = 0;
 
-
-  function findOneSolution (board, piecesRemaining, currentColumn) {
+  function findOneSolution (board, piecesRemaining, currentColumn, rowOfLastPiece) {
     var boardPeek = board.rows();
 
     if (board.hasAnyRooksConflicts()) {
@@ -71,13 +68,13 @@ window.countNRooksSolutions = function(n) {
       var row = 0;
       var column = currentColumn;
       for (row; row < n; row++) {
-        board.togglePiece(row, column);
-        findOneSolution(board, piecesRemaining-1, column+1);
-        board.togglePiece(row, column);
+        if (row !== rowOfLastPiece) {  
+          board.togglePiece(row, column);
+          findOneSolution(board, piecesRemaining-1, column+1, row);
+          board.togglePiece(row, column);
+        }
       }
-
     }
-
   }
 
   findOneSolution(board, n, 0);
@@ -95,7 +92,6 @@ window.findNQueensSolution = function(n) {
   var board = new Board({n : n});
   var piecesRemaining = n;
   var solution = [];
-
 
   function findOneSolution (board, piecesRemaining, currentColumn) {
     var boardPeek = board.rows();
@@ -134,8 +130,7 @@ window.countNQueensSolutions = function(n) {
   var piecesRemaining = n;
   var solution = 0;
 
-
-  function findOneSolution (board, piecesRemaining, currentColumn) {
+  function findOneSolution (board, piecesRemaining, currentColumn, rowOfLastPiece) {
     var boardPeek = board.rows();
 
     if (board.hasAnyQueensConflicts()) {
@@ -146,13 +141,13 @@ window.countNQueensSolutions = function(n) {
       var row = 0;
       var column = currentColumn;
       for (row; row < n; row++) {
-        board.togglePiece(row, column);
-        findOneSolution(board, piecesRemaining-1, column+1);
-        board.togglePiece(row, column);
+        if (row !== rowOfLastPiece) {
+          board.togglePiece(row, column);
+          findOneSolution(board, piecesRemaining-1, column+1);
+          board.togglePiece(row, column);
+        }
       }
-
     }
-
   }
 
   findOneSolution(board, n, 0);
